@@ -14,9 +14,36 @@ datasource db {
 }
 
 model Customer {
-  id         String @id @default(uuid())
+  id         String  @id @default(uuid())
   externalId String
-  email      String @unique
+  email      String  @unique
+  Order      Order[]
 }
 
+model Product {
+  id         String       @id @default(uuid())
+  externalId String
+  code       String
+  OrderItems OrderItems[]
+}
 
+model Order {
+  id String @id @default(uuid())
+
+  status String
+
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String
+
+  createdAt  DateTime     @default(now())
+  OrderItems OrderItems[]
+}
+
+model OrderItems {
+  id        String  @id @default(uuid())
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   String
+  quantity  Float
+}
